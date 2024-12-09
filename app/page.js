@@ -23,7 +23,6 @@ export default function Home() {
 
     return (
         <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-            {/* <h1>Create and Order Pizza</h1> */}
             <PizzaCarousel />
             <div className="grid gap-4 grid-cols-6 p-4 w-full h-full">
                 <div className="col-span-2 justify-content-start">

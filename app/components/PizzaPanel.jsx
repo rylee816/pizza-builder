@@ -1,111 +1,115 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 
 const PizzaPanel = ({ selectedIngredients, handleClear }) => {
     const [pizzaName, setPizzaName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
-    const { toast }= useToast()
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        if (error) {
+    // Mutation function to add a pizza. Will use this in the useMutation hook from react-query.
+    const addPizza = async (newPizza) => {
+        const response = await axios.post('/api/pizza', newPizza);
+        return response.data;
+    };
+
+    // Define the mutation and call in the onSubmit function.
+    const addPizzaMutation = useMutation({
+        mutationFn: addPizza,
+        onSuccess: () => {
+            // Need to invalidate the pizzas query to refetch updated data and reflect in Pizza Carousel
+            queryClient.invalidateQueries(['pizzas']);
+            toast({
+                title: "Pizza Created!",
+                description: "Your custom pizza has been successfully saved.",
+                variant: "success",
+            });
+            handleClear();
+            setPizzaName('');
+        },
+        onError: () => {
             toast({
                 title: "Error",
-                description: error,
+                description: "Failed to create pizza.",
                 variant: "error",
             });
-        }
-    }, [error]);
+        },
+    });
 
     const validatePizza = () => {
         const hasDough = selectedIngredients.some((ingredient) => ingredient.type === 'dough');
         const hasSauce = selectedIngredients.some((ingredient) => ingredient.type === 'sauce');
         const hasCheese = selectedIngredients.some((ingredient) => ingredient.type === 'dairy');
 
-        if (!hasDough) {
-            return 'Please select at least one dough.';
-        }
-        if (!hasSauce) {
-            return 'Please select at least one sauce.';
-        }
-        if (!hasCheese) {
-            return 'Please select at least one cheese.';
-        }
-
-        return setError(null)
+        if (!hasDough) return 'Please select at least one dough.';
+        if (!hasSauce) return 'Please select at least one sauce.';
+        if (!hasCheese) return 'Please select at least one cheese.';
+        return null;
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         setIsSubmitting(true);
+
         const error = validatePizza();
         if (error) {
-            setError(error);
-            setIsSubmitting(false)
+            toast({
+                title: "Validation Error",
+                description: error,
+                variant: "error",
+            });
+            setIsSubmitting(false);
             return;
         }
 
-        try {
-            const response = await axios.post('/api/pizza', {
-                selectedIngredients: selectedIngredients.map((ingredient) => ingredient._id),
-                name: pizzaName || 'Custom Pizza',
-            });
+        // use mutation function if no error from pizza validation
+        addPizzaMutation.mutate({
+            selectedIngredients: selectedIngredients.map((ingredient) => ingredient._id),
+            name: pizzaName || 'Custom Pizza',
+        });
 
-            toast({
-                title: "Pizza Created!",
-                description: "Your custom pizza has been successfully saved.",
-                variant: "success",
-            });
-            handleClear()
-            setPizzaName('')
-        } catch (err) {
-            setError('Failed to create pizza');
-            console.error(err);
-        } finally {
-            setTimeout(() => {
-                setIsSubmitting(false);
-            }, 1000);
-        }
+        setIsSubmitting(false);
     };
 
-    const calcTotalsWithTax = tax => {
-        const {totalPrice, totalCalories, price} = selectedIngredients?.reduce((acc, curr) => {
-            acc['price'] += curr.price
-            acc['totalCalories'] += curr.calories
-            acc['totalPrice'] = acc['price'] + (acc['price'] * tax)
-            return acc
-        }, {price: 0, totalPrice: 0, totalCalories: 0})
-        return {price, totalCalories, totalPrice}
-    }
+    const calcTotalsWithTax = (tax) => {
+        const { totalPrice, totalCalories, price } = selectedIngredients.reduce(
+            (acc, curr) => {
+                acc.price += curr.price;
+                acc.totalCalories += curr.calories;
+                acc.totalPrice = acc.price + acc.price * tax;
+                return acc;
+            },
+            { price: 0, totalPrice: 0, totalCalories: 0 }
+        );
+        return { price, totalCalories, totalPrice };
+    };
 
-    const totals = calcTotalsWithTax(.06)
+    const totals = calcTotalsWithTax(0.06);
 
     return (
         <div className="flex flex-col p-6 bg-gray-800 text-white rounded min-h-96 h-full">
             <h2 className="text-xl font-bold mb-4">Pizza Creation</h2>
-      
 
             <div className="flex w-full py-2 max-w-sm items-center space-x-2">
-                <Input 
-                  type="text"
-                  placeholder="Enter Pizza Name"
-                  value={pizzaName}
-                  onChange={(e) => setPizzaName(e.target.value)}
+                <Input
+                    type="text"
+                    placeholder="Enter Pizza Name"
+                    value={pizzaName}
+                    onChange={(e) => setPizzaName(e.target.value)}
                 />
                 <Button onClick={() => setPizzaName('')}>Clear</Button>
             </div>
-
 
             <div className="mb-4">
                 <div className="flex flex-col py-4 gap-3 w-1/2">
                     <h3 className="font-bold">Selected Ingredients:</h3>
                     <Separator />
                 </div>
-         
                 <ul>
                     {selectedIngredients.map((ingredient) => (
                         <li key={ingredient._id} className="mb-2">
@@ -123,22 +127,17 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
                 >
                     {isSubmitting ? 'Submitting...' : 'Save Pizza'}
                 </button>
-
                 <button
-                    onClick={() => {
-                        handleClear()
-                        setError(undefined)
-                    }}
+                    onClick={() => handleClear()}
                     disabled={isSubmitting || selectedIngredients.length === 0}
                     className="bg-red-500 p-2 rounded text-white disabled:bg-gray-500"
                 >
-                    {'Reset'}
+                    Reset
                 </button>
-            <p className="flex mt-auto ml-auto">Price: {totals.price.toFixed(2)} Calories: {totals.totalCalories} Total Price with Tax: {(totals.totalPrice).toFixed(2)}</p>
-
+                <p className="flex mt-auto ml-auto">
+                    Price: ${totals.price.toFixed(2)} | Calories: {totals.totalCalories} | Total Price with Tax: ${totals.totalPrice.toFixed(2)}
+                </p>
             </div>
-
-            {error && <div className="text-red-500 mt-4">{error}</div>}
         </div>
     );
 };
