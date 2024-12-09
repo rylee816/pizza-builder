@@ -1,5 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import QueryClientWrapper from "./components/QueryClientWrapper";
+import { Toaster } from "@/components/ui/toaster";
+import { seedDatabase } from "@/lib/database";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,13 +21,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+      // seedDatabase();
   return (
+    <QueryClientWrapper>
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className='bg-zinc-900 text-white'
       >
         {children}
+        <Toaster />
       </body>
     </html>
+    </QueryClientWrapper>
   );
 }
