@@ -1,15 +1,15 @@
 import 'module-alias/register.js'
-import mongoose from 'mongoose';
-import { connectToDB } from '@/lib/database';
-import { Ingredient, Pizza } from '@/lib/models';
+import mongoose from 'mongoose'
+import { connectToDB } from '@/lib/database'
+import { Ingredient, Pizza } from '@/lib/models'
 
 const seedDatabase = async () => {
     try {
-        await connectToDB();
+        await connectToDB()
 
-        await Ingredient.deleteMany({});
-        await Pizza.deleteMany({});
-        console.log('Cleared existing data');
+        await Ingredient.deleteMany({})
+        await Pizza.deleteMany({})
+        console.log('Cleared existing data')
 
         const ingredients = [
             { name: 'Standard Dough', type: 'dough', price: 2.5, calories: 200 },
@@ -20,10 +20,10 @@ const seedDatabase = async () => {
             { name: 'Cheese', type: 'dairy', price: 1.0, calories: 200 },
             { name: 'Tomato Sauce', type: 'sauce', price: 0.75, calories: 100 },
             { name: 'Olives', type: 'veggie', price: 0.5, calories: 40 },
-        ];
+        ]
 
-        const savedIngredients = await Ingredient.insertMany(ingredients);
-        console.log('Seeded ingredients:', savedIngredients);
+        const savedIngredients = await Ingredient.insertMany(ingredients)
+        console.log('Seeded ingredients:', savedIngredients)
 
 
         const pizzas = [
@@ -50,15 +50,15 @@ const seedDatabase = async () => {
                 totalPrice: 3.0 + 0.75 + 1.0 + 0.5 + 0.5, 
                 totalCalories: 230 + 100 + 200 + 50 + 40,
             },
-        ];
+        ]
 
-        const savedPizzas = await Pizza.insertMany(pizzas);
-        console.log('Seeded pizzas:', savedPizzas);
+        const savedPizzas = await Pizza.insertMany(pizzas)
+        console.log('Seeded pizzas:', savedPizzas)
 
-        mongoose.connection.close();
-        console.log('Database seeded successfully and connection closed');
+        mongoose.connection.close()
+        console.log('Database seeded successfully and connection closed')
     } catch (error) {
-        console.error('Error seeding database:', error);
-        mongoose.connection.close();
+        console.error('Error seeding database:', error)
+        mongoose.connection.close()
     }
-};
+}

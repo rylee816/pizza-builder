@@ -19,16 +19,17 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
         return response.data;
     };
 
-    // Define the mutation and call in the onSubmit function.
+    // Define the mutation and call in the onSubmit function. The mutationFn addPizza is called when mutation is triggered.
     const addPizzaMutation = useMutation({
+        // mutationFn - pass addPizza as callback on mutation trigger
         mutationFn: addPizza,
+        // 
         onSuccess: () => {
-            // Need to invalidate the pizzas query to refetch updated data and reflect in Pizza Carousel
+            // Need to invalidate the pizzas query to trigger refetch of updated data and reflect in Pizza Carousel
             queryClient.invalidateQueries(['pizzas']);
             toast({
                 title: "Pizza Created!",
                 description: "Your custom pizza has been successfully saved.",
-                variant: "success",
             });
             handleClear();
             setPizzaName('');
@@ -37,22 +38,23 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
             toast({
                 title: "Error",
                 description: "Failed to create pizza.",
-                variant: "error",
             });
         },
     });
 
+    // Ensure minimum ingredients to create a new pizza are present.
     const validatePizza = () => {
         const hasDough = selectedIngredients.some((ingredient) => ingredient.type === 'dough');
         const hasSauce = selectedIngredients.some((ingredient) => ingredient.type === 'sauce');
         const hasCheese = selectedIngredients.some((ingredient) => ingredient.type === 'dairy');
 
-        if (!hasDough) return 'Please select at least one dough.';
-        if (!hasSauce) return 'Please select at least one sauce.';
-        if (!hasCheese) return 'Please select at least one cheese.';
+        if (!hasDough) return 'Please select at least one dough.'
+        if (!hasSauce) return 'Please select at least one sauce.'
+        if (!hasCheese) return 'Please select at least one cheese.'
         return null;
     };
 
+    // Handles validation and triggers mutation function with new Pizza argument for POST request
     const handleSubmit = () => {
         setIsSubmitting(true);
 
@@ -67,15 +69,18 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
             return;
         }
 
-        // use mutation function if no error from pizza validation
+        // trigger mutation function if no error from pizza validation. Argument passed to mutate is sent to the mutationFn as its input.
         addPizzaMutation.mutate({
             selectedIngredients: selectedIngredients.map((ingredient) => ingredient._id),
             name: pizzaName || 'Custom Pizza',
         });
 
-        setIsSubmitting(false);
-    };
+        setTimeout(() => {
+          setIsSubmitting(false)
+        }, 1000)
+    }
 
+    // Pure function using derived state to render Pizza totals. Get interviewer's opinion on using derived state (proper usage, benefits)
     const calcTotalsWithTax = (tax) => {
         const { totalPrice, totalCalories, price } = selectedIngredients.reduce(
             (acc, curr) => {

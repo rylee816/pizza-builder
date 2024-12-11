@@ -73,6 +73,7 @@ const IngredientsPanel = ({ selectedIngredients, setSelectedIngredients }) => {
         }
     };
 
+    // TODO: add loading skeleton and better error display
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error fetching ingredients</div>;
 

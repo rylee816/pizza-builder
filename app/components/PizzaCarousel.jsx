@@ -11,17 +11,17 @@ function PizzaCarousel() {
     },
   });
 
+  // TODO: add loading skeleton and better error display
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error.message}</div>
   }
 
   return (
     <div>
-      <h2>Pizza Carousel</h2>
       <ul>
         {pizzas.map((pizza) => (
           <li key={pizza._id}>{pizza.name}</li>
