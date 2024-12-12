@@ -24,14 +24,14 @@ export default function RootLayout({ children }) {
       // seedDatabase();
   return (
     <QueryClientWrapper>
-    <html lang="en">
-      <body
-        className='bg-zinc-900 text-white'
-      >
-        {children}
-        <Toaster />
-      </body>
-    </html>
+      <html lang="en">
+        <body
+          className='bg-zinc-900 text-white'
+        >
+          {children}
+          <Toaster />
+        </body>
+      </html>
     </QueryClientWrapper>
   );
 }

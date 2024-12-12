@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Card, CardContent } from "@/components/ui/card"
+import Link from 'next/link';
 import {
   Carousel,
   CarouselContent,
@@ -38,17 +40,21 @@ function PizzaCarousel() {
     >
       <CarouselContent>
         {pizzas.map((pizza, index) => (
-          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+          <CarouselItem 
+            key={index} 
+            className="md:basis-1/2 lg:basis-1/3"
+            >
+            <Link href={`/pizzas/${pizza._id}`}>
             <div className="p-1">
-              <Card>
-              <CardContent className="relative flex flex-col aspect-square items-center justify-center p-0 overflow-hidden rounded-lg">
+              <Card className="hover: text-yellow-800">
+              <CardContent className="relative flex flex-col aspect-square items-center justify-center p-0 overflow-hidden rounded-lg cursor-pointer">
                 <div 
-                  className="absolute w-full h-full bg-contain bg-center rounded-lg"
+                  className="absolute w-full h-full bg-contain bg-center rounded-lg overflow-hidden outline outline-3"
                   style={{
                     backgroundImage: "url(https://plus.unsplash.com/premium_photo-1668771085743-1d2d19818140?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)"
                   }}
                 />
-                <div className="z-10 flex flex-col items-center text-white bg-orange-900 bg-opacity-70 p-4 rounded-lg">
+                <div className="z-10 flex flex-col items-center text-white bg-orange-900 bg-opacity-60 p-4 rounded-lg hover:bg-opacity-100 hover:bg-orange-600 transition transition-transform ease-in-out duration-300">
                   <span className="font-semibold">{pizza.name}</span>
                   <p className="mt-4">Last Ordered</p>
                   <span className="font-semibold">
@@ -62,6 +68,7 @@ function PizzaCarousel() {
               </CardContent>
               </Card>
             </div>
+            </Link>
           </CarouselItem>
         ))}
       </CarouselContent>
