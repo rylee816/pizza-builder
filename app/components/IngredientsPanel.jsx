@@ -30,7 +30,7 @@ const groupByType = (ingredients, selectedIngredients) => {
     }, {});
 };
 
-const IngredientsPanel = ({ selectedIngredients, setSelectedIngredients }) => {
+const IngredientsPanel = ({ selectedIngredients, setSelectedIngredients, defaultList = true }) => {
     const { data: ingredients, isLoading, error } = useQuery({
         queryKey: ['ingredients'],
         queryFn: fetchIngredients,
@@ -77,18 +77,19 @@ const IngredientsPanel = ({ selectedIngredients, setSelectedIngredients }) => {
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error fetching ingredients</div>;
 
-    return (
-        // <div className="grid gap-6">
-        //     {Object.entries(groupedIngredients).map(([type, ingredients]) => (
-        //         <IngredientList
-        //             key={type}
-        //             type={type}
-        //             ingredients={ingredients}
-        //             onToggleSelect={handleToggleSelect}
-        //             selectedIngredients={selectedIngredients}
-        //         />
-        //     ))}
-        // </div>
+    return defaultList ? (
+        <div className="grid gap-6">
+            {Object.entries(groupedIngredients).map(([type, ingredients]) => (
+                <IngredientList
+                    key={type}
+                    type={type}
+                    ingredients={ingredients}
+                    onToggleSelect={handleToggleSelect}
+                    selectedIngredients={selectedIngredients}
+                />
+            ))}
+        </div>
+    ) : (
         <div className="flex flex-col gap-6 h-full">
             <h1>Select Ingredients</h1>
             <Accordion type="single" collapsible>

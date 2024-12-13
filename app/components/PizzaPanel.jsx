@@ -77,7 +77,7 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
 
         setTimeout(() => {
           setIsSubmitting(false)
-        }, 1000)
+        }, 2000)
     }
 
     // Pure function using derived state to render Pizza totals. Get interviewer's opinion on using derived state (proper usage, benefits)

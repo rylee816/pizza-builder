@@ -26,7 +26,7 @@ export default function Home() {
             <PizzaCarousel />
             <div className="grid gap-4 grid-cols-6 p-4 w-full h-full">
                 <div className="col-span-2 justify-content-start">
-                    <IngredientsPanel selectedIngredients={selectedIngredients} onSelectIngredient={handleSelectIngredient} setSelectedIngredients={setSelectedIngredients} />
+                    <IngredientsPanel selectedIngredients={selectedIngredients} onSelectIngredient={handleSelectIngredient} setSelectedIngredients={setSelectedIngredients} defaultList={false} />
                 </div>
                 <div className="col-span-4">
                     <PizzaPanel selectedIngredients={selectedIngredients} handleClear={handleClear}/>
