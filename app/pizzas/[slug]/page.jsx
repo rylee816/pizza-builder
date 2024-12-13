@@ -45,7 +45,10 @@ const PizzaDetails = ({ params }) => {
     },
     onError: (error) => {
       console.error('Failed to delete pizza:', error);
-      alert('Failed to delete pizza.');
+      toast({
+        title: "Pizza Deletion Failed!",
+        description: "Failed to delete pizza. Please try again.",
+    });
     },
   });
 
@@ -76,6 +79,7 @@ const PizzaDetails = ({ params }) => {
           <div className="flex gap-4 mt-6">
             <button
               className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 disabled:bg-gray-400"
+            // TODO - Swap out for actual confirmation modal 
               onClick={() => {
                 if (confirm('Are you sure you want to delete this pizza?')) {
                   handleDelete();
