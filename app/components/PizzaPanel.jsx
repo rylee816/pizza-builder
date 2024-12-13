@@ -75,6 +75,7 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
             name: pizzaName || 'Custom Pizza',
         });
 
+        // Extend isSubmitting length to prevent rapid fire pizza creation
         setTimeout(() => {
           setIsSubmitting(false)
         }, 2000)
