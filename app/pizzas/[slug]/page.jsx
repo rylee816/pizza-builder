@@ -90,13 +90,13 @@ const PizzaDetails = ({ params }) => {
               {isDeleting ? 'Deleting...' : 'Delete Pizza'}
             </button>
             {/* Create a state variable instead to toggle Edit Modal rather than using a route to leverage curr Pizza data */}
-            {/* <button
+            <button
               className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-800 disabled:bg-gray-400"
               onClick={() => router.push(`/pizzas/${slug}/edit`)}
               disabled={isDeleting}
             >
               Edit Pizza
-            </button> */}
+            </button>
           </div>
         </div>
       </div>

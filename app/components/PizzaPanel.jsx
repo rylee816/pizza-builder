@@ -119,6 +119,7 @@ const PizzaPanel = ({ selectedIngredients, handleClear }) => {
                 <ul>
                     {selectedIngredients.map((ingredient) => (
                         <li key={ingredient._id} className="mb-2">
+                              {/* use multiplication to round number */}
                             {ingredient.name} - ${ingredient.price.toFixed(2)} ({ingredient.calories} cal)
                         </li>
                     ))}

@@ -37,7 +37,7 @@ const EditPizza = ({ params }) => {
             setPizzaName(pizza.name);
         }
     }, [pizza]);
-
+    console.log(selectedIngredients, slug, "SLUG")
     const { mutate: handleUpdate, isLoading: isUpdating } = useMutation({
         mutationFn: updatePizza,
         onSuccess: () => {

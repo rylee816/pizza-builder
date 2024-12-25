@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import QueryClientWrapper from "./components/QueryClientWrapper";
+import QueryClientWrapper from "./components/QueryClientSomething";
 import { Toaster } from "@/components/ui/toaster";
 import { seedDatabase } from "@/lib/database";
 
